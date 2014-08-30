@@ -1,0 +1,100 @@
+// Flexbox mixins for Webkit browsers. (Support Safari 6.1 and iOS 7)
+@mixin flexbox {
+	display: -webkit-flex;
+	display: flex;
+}
+
+@mixin flex-direction($value: row) {
+	-webkit-flex-direction: $value;
+	flex-direction: $value;
+}
+
+@mixin order($int: 0) {
+	-webkit-order: $int;
+	order: $int;
+}
+
+@mixin flex-grow($int: 0) {
+	-webkit-flex-grow: $int;
+	flex-grow: $int;
+}
+
+@mixin flex-shrink($int: 1) {
+	-webkit-flex-shrink: $int;
+	flex-shrink: $int;
+}
+
+@mixin flex-basis($value: auto) {
+	-webkit-flex-basis: $value;
+	flex-basis: $value;
+}
+
+@mixin align-items($value: stretch) {
+	-webkit-align-items: $value;
+	align-items: $value;
+}
+
+@mixin align-self($value: auto) {
+	// No Webkit Box Fallback.
+	-webkit-align-self: $value;
+	align-self: $value;
+}
+
+
+
+
+
+
+html, body {
+	height: 100%;
+	background: $background;
+}
+
+body {
+	@include flexbox;
+	@include flex-direction(column);
+}
+
+.login {
+	@include flex-shrink(0);
+	margin: auto;
+}
+
+.toolbar {
+	@include flex-basis(2em);
+	@include flex-shrink(0);
+	padding: 15px;
+}
+
+.sections {
+	@include flex-basis(45px + 5px);
+	@include flex-shrink(0);
+
+	@include flexbox;
+	@include align-items(flex-end);
+}
+
+.section-body {
+	@include flexbox;
+	@include flex-grow(1);
+	@include flex-shrink(10);
+
+	.pages {
+		overflow-y: auto;
+		@include order(2);
+		@include flex-basis(15em);
+
+		@include flexbox;
+		@include flex-direction(column);
+
+		.nav {
+			@include flex-grow(1);
+		}
+	}
+	.page-area {
+		overflow-y: auto;
+		background: #fff;
+		@include order(1);
+		@include flex-grow(1);
+	}
+}

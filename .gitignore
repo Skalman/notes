@@ -1,0 +1,14 @@
+# App specific
+
+dist-*
+api/cache/
+
+
+# npm
+
+node_modules
+
+
+# Sass
+
+.sass-cache

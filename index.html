@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="not-loaded">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Notes</title>
+	<script>
+		var config = {
+			storage: {
+				type: 'api',
+				path: 'api'
+			},
+			account: {
+				type: 'persona'
+			}
+		};
+
+		var config = {
+			storage: {
+				type: 'localstorage',
+				item: 'notes-notebook'
+			},
+			account: {
+				type: 'noauth',
+				item: 'notes-notebook-state'
+			}
+		};
+
+		// ESLint doesn't support /*exported*/ comments, so variables must be
+		// be used.
+		var exports = window;
+	</script>
+
+	<link href="images/post-it-note-transparent.png" rel="shortcut icon">
+
+	<!-- bundle: css -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/persona-buttons.css" rel="stylesheet">
+		<link href="css/site.css" rel="stylesheet">
+	<!-- /bundle -->
+
+	<!-- bundle: persona -->
+		<script src="api/js/persona" defer></script>
+	<!-- /bundle -->
+
+	<!-- bundle: lib -->
+		<script src="js/lib/jquery.min.js" defer></script>
+		<script src="js/lib/jquery.color-2.1.2.min.js" defer></script>
+		<script src="js/lib/knockout-3.1.0.js" defer></script>
+		<script src="js/lib/mousetrap.min.js" defer></script>
+		<script src="js/lib/mousetrap.global-bind.min.js" defer></script>
+		<script src="js/lib/promise-polyfill.min.js" defer></script>
+	<!-- /bundle -->
+
+	<!-- bundle: app -->
+		<!-- utils -->
+		<script src="js/knockout.htmltextvalue.js" defer></script>
+		<script src="js/constants.js" defer></script>
+		<script src="js/utils.js" defer></script>
+		<script src="js/support.js" defer></script>
+
+		<!-- app -->
+		<script src="js/notebook.model.js" defer></script>
+		<script src="js/localstorage.datamodel.js" defer></script>
+		<script src="js/api.datamodel.js" defer></script>
+		<script src="js/account.viewmodel.js" defer></script>
+		<script src="js/account.persona.viewmodel.js" defer></script>
+		<script src="js/app.viewmodel.js" defer></script>
+		<script src="js/app.viewmodel.nav.js" defer></script>
+		<script src="js/app.viewmodel.pagearea.js" defer></script>
+		<script src="js/app.viewmodel.pagearea.selection.js" defer></script>
+		<script src="js/app.viewmodel.storage.js" defer></script>
+		<script src="js/app.viewmodel.keyboardshortcuts.js" defer></script>
+		<script src="js/start.js" defer></script>
+	<!-- /bundle -->
+
+</head>
+<body data-bind="
+	css: {
+		selecting: $root.pageareaSelection.isActive
+	}
+">
+
+	<!-- ko with: account -->
+		<div class="login" data-bind="visible: !isLoggedIn() || $root.loadingNotebook()">
+			<noscript>
+				<div class="noscript">
+					<strong><i>Notes</i> only works with JavaScript enabled.</strong>
+				</div>
+			</noscript>
+
+			<h1>Notes &mdash; taking notes on the fly</h1>
+
+			<p><i>Notes</i> is a simple OneNote replacement, copying its sections and pages, and allowing freeform text.</p>
+
+			<p class="login-button">
+				<a href="" class="hidden-before-load persona-button dark" data-bind="
+				css: {
+					disabled: isLoggingIn() || $root.loadingNotebook(),
+					noauth: type === 'noauth'
+				},
+				click: login">
+					<span data-bind="visible: type === 'persona'">Sign in or sign up</span>
+					<span data-bind="visible: type === 'noauth'">Get started</span>
+				</a>
+
+				<span class="status" data-bind="
+					text:
+						isLoggingIn() ? 'Logging in...' :
+						$root.loadingNotebook() ? 'Loading your notebook...' :
+						''"></span>
+			</p>
+
+		</div>
+	<!-- /ko -->
+
+	<!-- ko with: notebook -->
+		<div class="toolbar page-header hidden-before-load">
+			<span>Tools...</span>
+			<a href="" data-bind="click: $root.account.logout">
+				<span data-bind="visible: $root.account.type === 'persona'">Sign out</span>
+				<span data-bind="visible: $root.account.type === 'noauth'">Back to splash page</span>
+			</a>
+		</div>
+
+		<ul class="sections hidden-before-load" data-bind="
+			style: { borderBottomColor: activeSection().color.toRgbaString() }">
+			<!-- ko foreach: sections -->
+				<li data-bind="css: {
+						active: $data === $parent.activeSection(),
+						renaming: $data === $root.renamedSection()
+					},
+					attr: { id: 'section-' + id }">
+					<a href="javascript:void 0"
+					class="delete-container"
+					data-bind="
+						style: { backgroundColor: color.toRgbaString() },
+						event: {
+							click: $parent.activeSection,
+							dblclick: $root.sectionRename,
+							keydown: $root.sectionKeydown
+						},
+						visible: $data !== $root.renamedSection()">
+						<span>
+							<span class="inner" data-bind="text: name" data-empty-text="Untitled"></span>
+							<span class="delete" title="Delete section" tabindex="0" data-bind="
+								click: $root.sectionDelete,
+								event: { keydown: $root.deleteButtonKeydown }">
+								<img src="images/delete.png" alt="Delete">
+							</span>
+						</span>
+					</a>
+					<span class="link" data-bind="
+						style: { backgroundColor: color.toRgbaString() },
+						visible: $data === $root.renamedSection()">
+						<input data-bind="
+							value: name,
+							event: {
+								blur: function () { $root.sectionRename(undefined) },
+								keydown: $root.sectionKeydown
+							}">
+					</span>
+				</li>
+			<!-- /ko -->
+			<li class="add-section">
+				<a href="#" data-bind="click: $root.sectionCreate" title="Create a new section">
+					<span class="inner">+</span>
+				</a>
+			</li>
+		</ul>
+
+		<!-- ko with: activeSection -->
+			<div class="section-body hidden-before-load">
+				<div class="pages" data-bind="style: {
+					backgroundColor: color.lightness(0.85).toRgbaString() }">
+					<ul class="nav" data-bind="style: {
+						backgroundColor: color.lightness(0.85).toRgbaString(),
+						borderLeftColor: color.toRgbaString() }">
+						<li class="add-page" data-bind="style: { backgroundColor: color.toRgbaString() }">
+							<a href="#" title="Create a new page" data-bind="
+								click: $root.pageCreate">
+								<span class="inner">
+									Add Page
+								</span>
+							</a>
+						</li>
+						<!-- ko foreach: pages -->
+							<li data-bind="
+								css: { active: $data === $parent.activePage() },
+								attr: { id: 'page-' + id }">
+								<a href="javascript:void 0"
+								class="delete-container"
+								data-bind="
+									event: {
+										click: $parent.activePage,
+										clickBubble: true,
+										dblclick: $root.pageRename,
+										keydown: $root.pageKeydown
+									},
+									style: { borderColor: ($data === $parent.activePage() ? $parent.color.toRgbaString() : false) }">
+									<span class="delete" title="Delete page" tabindex="0" data-bind="
+										click: $root.pageDelete,
+										event: { keydown: $root.deleteButtonKeydown }">
+										<img src="images/delete.png" alt="Delete">
+									</span>
+									<span class="inner" data-bind="text: name" data-empty-text="Untitled"></span>
+								</a>
+							</li>
+						<!-- /ko -->
+					</ul>
+				</div>
+
+				<!-- ko with: activePage -->
+					<div class="page-area" data-bind="
+						event: {
+							mousedown: $root.pageareaMousedown
+						}">
+
+						<!-- ko foreach: items -->
+							<div class="item" data-bind="
+								css: {
+									title: isTitle,
+									empty: isEmpty,
+									selected: isSelected
+								},
+								style: {
+									left: $root.pxPerUnit * x() + 'px',
+									top: $root.pxPerUnit * y() + 'px'
+								},
+								attr: {
+									id: 'item-' + id
+								},
+								event: {
+									mousedown: $root.itemMousedown
+								}">
+								<div class="dragbar" data-bind="
+									event: {
+										mousedown: $root.itemDragbarMousedown
+									}
+								"></div>
+								<div contenteditable data-bind="
+									htmlValue: html,
+									event: {
+										focus: $root.itemFocus,
+										blur: $root.itemBlur,
+										keydown: $root.itemKeydown,
+										input: $root.itemInput
+									},
+									attr: {
+										'data-empty-text': isTitle ? 'Untitled' : null
+									}"></div>
+							</div>
+						<!-- /ko -->
+						<!-- ko with: $root.pageareaSelection -->
+							<div class="selection" data-bind="
+								visible: isActive,
+								style: {
+									left: left() + 'px',
+									top: top() + 'px',
+									width: width() + 'px',
+									height: height() + 'px'
+								}
+							"></div>
+						<!-- /ko -->
+						<div class="farthest-position" data-bind="
+						style: {
+							left: farthestPosition.left() + 'px',
+							top: (farthestPosition.top() + $root.pxPerUnit * 8) + 'px',
+						}"></div>
+					</div>
+				<!-- /ko -->
+			</div>
+		<!-- /ko -->
+	<!-- /ko -->
+
+	<div class="shortcuts hidden-before-load" style="display: none;" data-bind="visible: keyboardShortcutsActive">
+		<table data-bind="foreach: keyboardShortcuts">
+			<tr data-bind="if: $data.desc">
+				<th data-bind="text: $data.bindGlobal || $data.bind"></th>
+				<td data-bind="text: desc"></td>
+			</tr>
+		</table>
+	</div>
+
+</body>
+</html>
