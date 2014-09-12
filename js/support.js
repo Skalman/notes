@@ -58,5 +58,5 @@ if (!Math.hypot) {
 // clicking (probably because the scroll bar disappears). Assume that this will
 // be resolved by Chrome 40.
 if (/Chrome\/3\d\.0/.test(navigator.userAgent)) {
-	$('.page-area').css('overflow-y', 'scroll');
+	$('.pagearea').css('overflow-y', 'scroll');
 }

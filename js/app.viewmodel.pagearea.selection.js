@@ -13,7 +13,7 @@ function AppViewModel_PageArea_Selection(self) {
 	var prevSelection;
 	var selectionKeydownActive = false;
 	function selectionKeydown(e) {
-		if (getFocusedElement() || !$('.item.selected').length) {
+		if (getFocusedElement() || !$('.item.is-selected').length) {
 			selectionKeydownActive = false;
 			$(window).off('keydown', selectionKeydown);
 			return;
@@ -50,7 +50,7 @@ function AppViewModel_PageArea_Selection(self) {
 			case KEY_UP:
 			case KEY_RIGHT:
 			case KEY_DOWN:
-				focusElem = $('.item.selected > [contenteditable]').first();
+				focusElem = $('.item.is-selected > .contenteditable').first();
 				break;
 
 			default:
@@ -71,7 +71,7 @@ function AppViewModel_PageArea_Selection(self) {
 					});
 					self.recalculateFarthestPosition();
 				}
-				focusElem = $('.item.selected > [contenteditable]'); // Should be only one left.
+				focusElem = $('.item.is-selected > .contenteditable'); // Should be only one left.
 		}
 		if (focusElem) {
 			focusElem.focus();
@@ -105,7 +105,7 @@ function AppViewModel_PageArea_Selection(self) {
 
 			if (supportMultipleSelections) {
 				selectElements(selectedIds.map(function (itemId) {
-					return $('#item-' + itemId + ' > [contenteditable]')[0];
+					return $('#item-' + itemId + ' > .contenteditable')[0];
 				}));
 			}
 		}
@@ -116,8 +116,8 @@ function AppViewModel_PageArea_Selection(self) {
 		if (!activePage)
 			return;
 
-		var scrollTop = $('.page-area').scrollTop();
-		var scrollLeft = $('.page-area').scrollLeft();
+		var scrollTop = $('.pagearea').scrollTop();
+		var scrollLeft = $('.pagearea').scrollLeft();
 
 		return activePage.items()
 		.filter(function (item) {
@@ -158,10 +158,10 @@ function AppViewModel_PageArea_Selection(self) {
 			// Don't inhibit right-click and scroll wheel.
 			return true;
 		}
-		var offset = $('.page-area').offset();
-		var areaHeight = $('.page-area').outerHeight();
-		var areaWidth = $('.page-area').outerWidth();
-		var scrollbars = hasScrollbar($('.page-area'));
+		var offset = $('.pagearea').offset();
+		var areaHeight = $('.pagearea').outerHeight();
+		var areaWidth = $('.pagearea').outerWidth();
+		var scrollbars = hasScrollbar($('.pagearea'));
 		var scrollbarWidth = measureScrollbarWidth();
 
 		// Set height and width to the area available for content (i.e. exclude scrollbars).
@@ -186,10 +186,10 @@ function AppViewModel_PageArea_Selection(self) {
 		$('body').on('mousemove', onmousemove);
 		$('body').on('mouseup', onmouseup);
 		var scrollTop, scrollLeft;
-		var scrollHeight = $('.page-area').prop('scrollHeight');
-		var scrollWidth = $('.page-area').prop('scrollWidth');
+		var scrollHeight = $('.pagearea').prop('scrollHeight');
+		var scrollWidth = $('.pagearea').prop('scrollWidth');
 		onscroll();
-		$('.page-area').on('scroll', onscroll);
+		$('.pagearea').on('scroll', onscroll);
 		var origX = e.pageX - offset.left + scrollLeft;
 		var origY = e.pageY - offset.top + scrollTop;
 		var items = self.getItemDimensions();
@@ -202,8 +202,8 @@ function AppViewModel_PageArea_Selection(self) {
 			.isActive(true);
 
 		function onscroll() {
-			scrollTop = $('.page-area').scrollTop();
-			scrollLeft = $('.page-area').scrollLeft();
+			scrollTop = $('.pagearea').scrollTop();
+			scrollLeft = $('.pagearea').scrollLeft();
 		}
 		function onmousemove(e) {
 			var pageX = Math.max(1, e.pageX - offset.left + scrollLeft);
@@ -258,7 +258,7 @@ function AppViewModel_PageArea_Selection(self) {
 			}
 
 			if (scrolled) {
-				$('.page-area')
+				$('.pagearea')
 					.scrollTop(scrollTop)
 					.scrollLeft(scrollLeft);
 
@@ -282,7 +282,7 @@ function AppViewModel_PageArea_Selection(self) {
 			$(window).off('keydown', onkeydown);
 			$('body').off('mousemove', onmousemove);
 			$('body').off('mouseup', onmouseup);
-			$('.page-area').off('scroll', onscroll);
+			$('.pagearea').off('scroll', onscroll);
 			self.pageareaSelection.isActive(false);
 			clearInterval(scrollInterval);
 		}

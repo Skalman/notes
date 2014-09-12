@@ -1,0 +1,41 @@
+// Flexbox mixins for Webkit browsers. (Support Safari 6.1 and iOS 7)
+.flexbox() {
+	display: -webkit-flex;
+	display: flex;
+}
+
+.flex-direction(@value: row) {
+	-webkit-flex-direction: @value;
+	flex-direction: @value;
+}
+
+.order(@int: 0) {
+	-webkit-order: @int;
+	order: @int;
+}
+
+.flex-grow(@int: 0) {
+	-webkit-flex-grow: @int;
+	flex-grow: @int;
+}
+
+.flex-shrink(@int: 1) {
+	-webkit-flex-shrink: @int;
+	flex-shrink: @int;
+}
+
+.flex-basis(@value: auto) {
+	-webkit-flex-basis: @value;
+	flex-basis: @value;
+}
+
+.align-items(@value: stretch) {
+	-webkit-align-items: @value;
+	align-items: @value;
+}
+
+.align-self(@value: auto) {
+	// No Webkit Box Fallback.
+	-webkit-align-self: @value;
+	align-self: @value;
+}

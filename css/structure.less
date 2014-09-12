@@ -1,0 +1,53 @@
+html, body {
+	height: 100%;
+	background: @color--bg;
+}
+
+body {
+	.flexbox;
+	.flex-direction(column);
+}
+
+.login {
+	.flex-shrink(0);
+	margin: auto;
+}
+
+.toolbar {
+	.flex-basis(2em);
+	.flex-shrink(0);
+	padding: 15px;
+}
+
+.sections {
+	.flex-basis( (45px + 5px) );
+	.flex-shrink(0);
+
+	.flexbox;
+	.align-items(flex-end);
+}
+
+.section-body {
+	.flexbox;
+	.flex-grow(1);
+	.flex-shrink(10);
+
+	.pages {
+		overflow-y: auto;
+		.order(2);
+		.flex-basis(15em);
+
+		.flexbox;
+		.flex-direction(column);
+
+		.nav {
+			.flex-grow(1);
+		}
+	}
+	.pagearea {
+		overflow-y: auto;
+		background: #fff;
+		.order(1);
+		.flex-grow(1);
+	}
+}

@@ -11,7 +11,7 @@ module.exports = function (grunt, conf) {
 		minify: {
 			files: {
 				'tmp/app/style.min.css': ['tmp/app/style.css'],
-			}
+			},
 		},
 	};
 

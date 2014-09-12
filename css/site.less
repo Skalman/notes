@@ -1,0 +1,351 @@
+@import "vendor-prefixes";
+@import "definitions";
+@import "structure";
+@import "utils";
+
+
+.noscript {
+	margin: -1.5em -3em 0 -3em;
+	padding: 1em;
+	background: @color--noscript-bg;
+	color: @color--noscript-text;
+	text-align: center;
+	box-shadow: 0 0 1em rgba(0, 0, 0, 0.5);
+}
+
+html.not-loaded .hidden-before-load {
+	display: none;
+}
+
+.sections {
+	border-bottom: 5px solid #000;
+	padding: 0 15px;
+	margin: 0;
+	list-style: none;
+
+	> li {
+		margin: 0 2px;
+
+	}
+	> li.notebook-name {
+		margin: 0 15px 0 0;
+	}
+
+	a,
+	.link {
+		cursor: pointer;
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		border-bottom-width: 0;
+		border-radius: 3px 3px 0 0;
+		display: inline-block;
+		color: #333;
+		line-height: 20px;
+		padding: 5px 10px;
+		text-decoration: none;
+
+		&:hover,
+		&:focus,
+		&.focus {
+			padding: 7px 10px 8px 10px;
+		}
+	}
+
+	.delete {
+		// Take as little horizontal space as possible.
+		margin-left: -2px;
+		margin-right: -8px;
+	}
+
+
+	.active > a,
+	.active > .link {
+		color: #111;
+		padding: 10px 10px;
+	}
+
+	.add-section > a {
+		border-color: #ccc;
+		background: #f5f5f5;
+	}
+
+	.renaming input {
+		width: 8em;
+		border: 1px dotted #223;
+		outline: none;
+		padding: 1px 2px;
+		font: inherit;
+		line-height: inherit;
+	}
+}
+
+.pages {
+	ul {
+		height: 100%;
+		border-left: 1px solid rgba(0, 0, 0, 0.1);
+	}
+
+	a {
+		color: #333;
+		margin-right: 5px;
+		border: 1px solid transparent;
+		border-left-width: 0;
+		padding: 5px !important;
+
+		&:hover,
+		&:focus,
+		&.focus {
+			background: rgba(255, 255, 255, 0.3) !important;
+		}
+
+		> .delete {
+			float: right;
+			margin-top: 4px;
+			margin-right: 1px;
+		}
+	}
+
+	.add-page {
+		padding-bottom: 1em;
+		margin-bottom: 1em;
+
+		> a {
+			margin-left: 5px;
+		}
+	}
+
+	.active > a {
+		position: relative;
+		background: @color--pagearea-bg !important;
+		cursor: default;
+
+		&::before {
+			position: absolute;
+			left: -1px;
+			top: 0;
+			content: "";
+			background: @color--pagearea-bg;
+			width: 1px;
+			height: 100%;
+		}
+	}
+}
+
+.pagearea {
+	padding: 15px 15px 50px 15px;
+	position: relative;
+	cursor: text;
+
+	html.dragging-item & {
+		cursor: move;
+	}
+
+	body.selecting & {
+		cursor: default;
+	}
+
+	> .item {
+		display: flex;
+		position: absolute;
+		float: left;
+		margin-top: (-10px - 7px);
+		margin-left: (-10px - 1px);
+		min-width: 75px;
+
+		> .contenteditable {
+			position: relative;
+			min-width: 75px;
+			border: 1px solid transparent;
+			border-top-width: 0;
+			padding: (10px + 7px) 25px 10px 10px;
+			outline: none;
+		}
+
+		&.focus,
+		&.is-selected,
+		&:hover,
+		&.dragging {
+			> .contenteditable {
+				border-color: @color--item-border;
+			}
+
+			> .dragbar {
+				background: @color--item-border;
+				&::before {
+					content: "";
+					display: block;
+					position: relative;
+					top: 3px;
+					margin: 0 auto;
+					width: 14px;
+					height: 2px;
+					background: url("data:image/gif;base64,R0lGODlhCAAEAIABAJmZmf///yH5BAEKAAEALAAAAAAIAAQAAAIIhBEZh8q6DiwAOw==");
+					background-size: 4px, 2px;
+				}
+			}
+		}
+
+		html.no-multiple-selections &.is-selected {
+			&::before {
+				content: "";
+				position: absolute;
+				left: 0;
+				top: 7px;
+				width: 100%;
+				height: calc(100% - 7px);
+				border: 7px solid @color--item-border-selected;
+			}
+
+			> .contenteditable {
+				border-color: @color--item-border-selected-inner;
+			}
+			> .dragbar {
+				background: @color--item-border-selected-inner;
+			}
+		}
+
+		&.is-empty {
+			min-width: 0;
+
+			> .contenteditable {
+				border-color: transparent;
+			}
+			> .dragbar {
+				visibility: hidden;
+			}
+		}
+		&.title {
+			font-size: 1.8em;
+			padding: 10px;
+			min-width: 100px;
+
+			> .contenteditable {
+				border: 0;
+				border-bottom: 1px solid @color--item-border;
+				padding: 0 30px 0 5px;
+			}
+
+			> .dragbar {
+				display: none;
+			}
+		}
+
+		> .dragbar {
+			cursor: move;
+			position: absolute;
+			z-index: @zIndex-3--item-dragbar;
+			width: 100%;
+			height: 7px;
+		}
+	}
+}
+
+.selection {
+	position: absolute;
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	background: rgba(0, 0, 0, 0.05);
+	z-index: @zIndex-5--pagearea-selection;
+}
+
+.farthest-position {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px 0 0 -1px;
+	visibility: hidden;
+}
+
+.shortcuts {
+	position: fixed;
+	top: 5%;
+	left: 10%;
+	width: 80%;
+	height: 90%;
+	padding: 2em;
+	border-radius: 1em;
+	background: @color--shortcuts-bg;
+	color: @color--shortcuts-text;
+
+	th {
+		color: @color--shortcuts-combination;
+		text-align: right;
+		padding-right: 1em;
+	}
+}
+
+
+.delete {
+	@size: 12px;
+
+	display: inline-block;
+	vertical-align: baseline;
+	width: @size;
+	height: @size;
+	position: relative;
+	visibility: hidden;
+	cursor: default;
+	outline: none;
+	background: rgba(255, 255, 255, 0.5);
+
+	.delete-container:hover &,
+	.delete-container:focus &,
+	.delete-container.focus &,
+	&:hover,
+	&:focus {
+		visibility: visible;
+	}
+
+	> img,
+	&:hover::after,
+	&:focus::after {
+		position: absolute;
+		top: 0;
+		width: @size;
+		height: @size;
+	}
+
+	&:hover::after,
+	&:focus::after {
+		content: "";
+		background: url("../images/delete-hover.png");
+		background-size: @size auto;
+	}
+}
+
+.login {
+	position: relative;
+	top: -1.5em;
+	background: @color--login-bg;
+	padding: 3em;
+	box-shadow: 0 0 1em rgba(0, 0, 0, 0.3);
+
+	> h1:first-child {
+		margin-top: 0;
+	}
+
+	.button-container {
+		margin-top: 2em;
+	}
+
+	.status {
+		font-size: 0.9em;
+		margin-left: 1em;
+		color: #333;
+	}
+
+	.persona-button {
+		vertical-align: middle;
+	}
+}
+
+// Most of the Persona button styles are in persona-buttons.css.
+.persona-button {
+	&:hover,
+	&:focus {
+		color: #fff;
+	}
+
+	&.disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+}

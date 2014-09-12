@@ -117,7 +117,7 @@ function AppViewModel_Nav(self) {
 		self.pageRename();
 	};
 	self.pageRename = function () {
-		$('.page-area .item.title > div[contenteditable]').focus();
+		$('.pagearea .item.title > .contenteditable').focus();
 	};
 
 	function pageDelete(page) {

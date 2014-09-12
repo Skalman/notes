@@ -94,7 +94,7 @@
 
 			<p><i>Notes</i> is a simple OneNote replacement, copying its sections and pages, and allowing freeform text.</p>
 
-			<p class="login-button">
+			<p class="button-container">
 				<a href="" class="hidden-before-load persona-button dark" data-bind="
 				css: {
 					disabled: isLoggingIn() || $root.loadingNotebook(),
@@ -133,7 +133,7 @@
 					},
 					attr: { id: 'section-' + id }">
 					<a href="javascript:void 0"
-					class="delete-container"
+					class="delete-container u-link-dotted-inner"
 					data-bind="
 						style: { backgroundColor: color.toRgbaString() },
 						event: {
@@ -143,7 +143,7 @@
 						},
 						visible: $data !== $root.renamedSection()">
 						<span>
-							<span class="inner" data-bind="text: name" data-empty-text="Untitled"></span>
+							<span class="u-inner u-empty-text" data-bind="text: name" data-empty-text="Untitled"></span>
 							<span class="delete" title="Delete section" tabindex="0" data-bind="
 								click: $root.sectionDelete,
 								event: { keydown: $root.deleteButtonKeydown }">
@@ -178,9 +178,9 @@
 						backgroundColor: color.lightness(0.85).toRgbaString(),
 						borderLeftColor: color.toRgbaString() }">
 						<li class="add-page" data-bind="style: { backgroundColor: color.toRgbaString() }">
-							<a href="#" title="Create a new page" data-bind="
+							<a href="#" class="u-block u-link-dotted-inner" title="Create a new page" data-bind="
 								click: $root.pageCreate">
-								<span class="inner">
+								<span class="u-block u-inner">
 									Add Page
 								</span>
 							</a>
@@ -190,7 +190,7 @@
 								css: { active: $data === $parent.activePage() },
 								attr: { id: 'page-' + id }">
 								<a href="javascript:void 0"
-								class="delete-container"
+								class="u-block u-link-dotted-inner delete-container"
 								data-bind="
 									event: {
 										click: $parent.activePage,
@@ -204,7 +204,7 @@
 										event: { keydown: $root.deleteButtonKeydown }">
 										<img src="images/delete.png" alt="Delete">
 									</span>
-									<span class="inner" data-bind="text: name" data-empty-text="Untitled"></span>
+									<span class="u-block u-inner u-empty-text" data-bind="text: name" data-empty-text="Untitled"></span>
 								</a>
 							</li>
 						<!-- /ko -->
@@ -212,7 +212,7 @@
 				</div>
 
 				<!-- ko with: activePage -->
-					<div class="page-area" data-bind="
+					<div class="pagearea" data-bind="
 						event: {
 							mousedown: $root.pageareaMousedown
 						}">
@@ -221,8 +221,8 @@
 							<div class="item" data-bind="
 								css: {
 									title: isTitle,
-									empty: isEmpty,
-									selected: isSelected
+									'is-empty': isEmpty,
+									'is-selected': isSelected
 								},
 								style: {
 									left: $root.pxPerUnit * x() + 'px',
@@ -239,7 +239,7 @@
 										mousedown: $root.itemDragbarMousedown
 									}
 								"></div>
-								<div contenteditable data-bind="
+								<div contenteditable class="contenteditable u-empty-text" data-bind="
 									htmlValue: html,
 									event: {
 										focus: $root.itemFocus,

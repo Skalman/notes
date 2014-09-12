@@ -1,0 +1,27 @@
+.u-block {
+	display: block;
+}
+
+.u-link-dotted-inner {
+
+	.u-inner {
+		border: 1px dotted transparent;
+		padding: 1px 2px;
+	}
+
+	&:focus,
+	&:active {
+		outline: none;
+
+		.u-inner {
+			border-color: currentColor;
+		}
+	}
+}
+
+.u-empty-text:empty::after,
+.is-empty .u-empty-text::after {
+	content: attr(data-empty-text);
+	font-style: italic;
+	color: rgba(0, 0, 0, 0.7)
+}

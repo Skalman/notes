@@ -54,7 +54,7 @@ function AppViewModel_PageArea(self) {
 	};
 
 	function itemGetContenteditableById(itemId) {
-		return $('#item-' + itemId + ' > div[contenteditable]');
+		return $('#item-' + itemId + ' > .contenteditable');
 	}
 	self.itemMousedown = function (item, e) {
 		e.stopPropagation();
@@ -62,18 +62,18 @@ function AppViewModel_PageArea(self) {
 	};
 	self.itemFocus = function (item) {
 		$('#item-' + item.id).addClass('focus');
-		$('.item.selected').removeClass('selected');
+		$('.item.is-selected').removeClass('is-selected');
 	};
 	self.itemBlur = function (item) {
 		if (!stripTags(item.html()) && !item.isTitle) {
 			self.notebook().activeSection().activePage().items.remove(item);
 		}
 		$('#item-' + item.id).removeClass('focus');
-		$('.item.selected').removeClass('selected');
+		$('.item.is-selected').removeClass('is-selected');
 	};
 
 	// Difficult to achieve with Knockout. (clickBubble:false doesn't work)
-	$('.page-area').on('click', '.item', function (e) {
+	$('.pagearea').on('click', '.item', function (e) {
 		e.stopPropagation();
 	});
 
@@ -115,7 +115,7 @@ function AppViewModel_PageArea(self) {
 		} else {
 			// The range contains nothing. Actually move a page up or down by
 			// simulating a click there.
-			var area = $('.page-area');
+			var area = $('.pagearea');
 			var scrollAmount =
 				Math.floor(area.outerHeight() / self.pxPerUnit - 1) // Number of units...
 				* self.pxPerUnit // ...in pixels...
@@ -152,7 +152,7 @@ function AppViewModel_PageArea(self) {
 		var y = item.y();
 		var diffX = 0;
 		var diffY = 0;
-		var area = $('.page-area');
+		var area = $('.pagearea');
 
 		if (key === KEY_UP && y !== 1)
 			diffY = -1;
@@ -203,7 +203,7 @@ function AppViewModel_PageArea(self) {
 	};
 	self.itemInput = function (item) {
 		var $item = $('#item-' + item.id);
-		var $editable = $item.find('div[contenteditable]');
+		var $editable = $item.find('.contenteditable');
 		var html = $editable.html();
 
 		item.isEmpty(!html || html === '<br>');
@@ -220,16 +220,16 @@ function AppViewModel_PageArea(self) {
 
 
 		var items;
-		if ($('#item-' + item.id).hasClass('selected')) {
+		if ($('#item-' + item.id).hasClass('is-selected')) {
 			items = self.getSelectedItems();
-			$('.item.selected').addClass('dragging');
+			$('.item.is-selected').addClass('dragging');
 		} else {
 			if (getFocusedElement())
 				getFocusedElement().blur();
 
 			items = [item];
 			$('#item-' + item.id).addClass('dragging');
-			$('.item.selected').removeClass('selected');
+			$('.item.is-selected').removeClass('is-selected');
 		}
 		var origPositions = items.map(function (item) {
 			return { x: item.x(), y: item.y() };
@@ -290,7 +290,7 @@ function AppViewModel_PageArea(self) {
 
 		// Overlaps any (other) item?
 		var $overlappedItem;
-		$('.page-area .item').each(function () {
+		$('.pagearea .item').each(function () {
 			if (this.id === 'item-' + item.id)
 				return;
 
@@ -305,7 +305,7 @@ function AppViewModel_PageArea(self) {
 		});
 
 		if ($overlappedItem) {
-			$overlappedItem.find('div[contenteditable]').focus();
+			$overlappedItem.find('.contenteditable').focus();
 			self.notebook().activeSection().activePage().items.remove(item);
 			return true;
 		} else {

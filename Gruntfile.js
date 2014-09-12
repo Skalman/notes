@@ -56,6 +56,7 @@ module.exports = function (grunt) {
 
 		common: [
 			'lint-source',
+			'less',
 			'concat-common',
 			'copy-common',
 			'minify',
@@ -73,19 +74,15 @@ module.exports = function (grunt) {
 			'clean',
 		],
 	};
-	grunt.util._.each(tasks, function (task, name) {
-		grunt.registerTask(name, task);
-	});
+	for (var name in tasks) {
+		grunt.registerTask(name, tasks[name]);
+	}
 
 
 	// Import tasks from build/grunt-*.js.
-	[].concat(
-		tasks.common,
-		'php-specific',
-		'localstorage-specific',
-		'clean'
-	).forEach(function (task) {
-		require('./build/grunt-' + task)(grunt, initConfig);
+	grunt.file.expand(['build/grunt-*.js'])
+	.forEach(function (filename) {
+		require('./' + filename)(grunt, initConfig);
 	});
 
 
@@ -93,12 +90,13 @@ module.exports = function (grunt) {
 
 	// Load plugins.
 	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-contrib-less');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-clean');
-
 	grunt.loadNpmTasks('grunt-eslint');
 
 };
